@@ -1,12 +1,15 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Introduction
+the-blade-app is a fullstack monolith nextjs application that handles business processes for a barbershop.
+
 ## Getting Started
 ```bash
 npm install
 ```
 
 ## Libraries Packages
-This next.js kit / template comes with:
+This application have the following packagaes:
 - Tailwindcss
 - TailwindUI
 - HeroIcons
