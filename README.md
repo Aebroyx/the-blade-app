@@ -1,7 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Introduction
-the-blade-app is a fullstack monolith nextjs application that handles business processes for a barbershop.
+the-blade-app is a fullstack monolith nextjs application that handles business processes specifically the point of sale (POS) of a business. This repository is the UI (front-end) app of the project.
 
 ## Getting Started
 ```bash
