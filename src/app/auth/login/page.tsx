@@ -8,6 +8,7 @@ import { userService } from '@/services/userService';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/hooks/useAuth';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -61,11 +62,16 @@ export default function LoginPage() {
     <div className="h-screen flex items-center justify-center">
       <div className="w-full max-w-md p-8 space-y-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            alt="Your Company"
-            src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-            className="mx-auto h-10 w-auto"
-          />
+          <div className="relative mx-auto h-10 w-auto">
+            <Image
+              alt="Blade App Logo"
+              src="/the-blade-app-high-resolution-logo-transparent.png"
+              fill
+              sizes="(max-width: 768px) 200px, 200px"
+              className="object-contain"
+              priority
+            />
+          </div>
           <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-foreground">
             Sign in to your account
           </h2>
