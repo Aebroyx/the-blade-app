@@ -5,7 +5,7 @@
 /* Light mode (default) */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a1a1a;
   --primary: #8A73F9;
   --secondary: #E2F973;
   --primary-light: #BFA7FF;
@@ -16,7 +16,7 @@
 
 /* Dark mode (when .dark class is present) */
 .dark {
-  --background: #1a1a1a;
+  --background: #23272f;
   --foreground: #ededed;
   --primary: #8A73F9;
   --secondary: #E2F973;

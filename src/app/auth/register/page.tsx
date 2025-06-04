@@ -9,6 +9,7 @@ import type { AppDispatch } from '@/store/store';
 import { userService } from '@/services/userService';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/hooks/useAuth';
+import Image from 'next/image';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -84,11 +85,16 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md p-8 space-y-8">
         <div className="text-center">
-          <img
-            alt="Your Company"
-            src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-            className="mx-auto h-10 w-auto"
-          />
+          <div className="relative mx-auto h-10 w-auto mb-8">
+            <Image
+              alt="Blade App Logo"
+              src="/the-blade-app-high-resolution-logo-transparent.png"
+              fill
+              sizes="(max-width: 768px) 200px, 200px"
+              className="object-contain"
+                priority
+            />
+          </div>
           <h2 className="mt-6 text-2xl font-bold tracking-tight text-foreground">
             Create your account
           </h2>
