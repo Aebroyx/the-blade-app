@@ -1,35 +1,40 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setCredentials } from '@/store/features/authSlice';
+import { useQuery } from '@tanstack/react-query';
+import { User } from '@/store/features/authSlice';
+
+async function getCurrentUser(): Promise<User> {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
+    credentials: 'include',
+  });
+  
+  if (!response.ok) {
+    throw new Error('Not authenticated');
+  }
+  
+  return response.json();
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        // Always try to get the current user - the cookie will be sent automatically if it exists
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
-          credentials: 'include',
-        });
+  const { data, isError } = useQuery({
+    queryKey: ['me'],
+    queryFn: getCurrentUser,
+    retry: false,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    gcTime: Infinity,
+  });
 
-        if (response.ok) {
-          const data = await response.json();
-          dispatch(setCredentials({ user: data }));
-        } else {
-          // Clear any stale user data
-          dispatch(setCredentials({ user: null }));
-        }
-      } catch (error) {
-        // Clear any stale user data on error
-        dispatch(setCredentials({ user: null }));
-      }
-    };
-
-    checkAuth();
-  }, [dispatch]);
+  // Update Redux store when query state changes
+  if (isError) {
+    dispatch(setCredentials({ user: null }));
+  } else if (data) {
+    dispatch(setCredentials({ user: data }));
+  }
 
   return <>{children}</>;
 } 
