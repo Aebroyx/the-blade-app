@@ -4,8 +4,10 @@ import { Navigation } from "@/components/Navigation";
 import Table, { Column } from "@/components/ui/Table";
 import { userService, GetUserResponse } from "@/services/userService";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export default function UsersManagementPage() {
+  const router = useRouter();
   const { data: users, isLoading, error } = useQuery({
     queryKey: ['users'],
     queryFn: () => userService.getAllUsers(),
@@ -66,13 +68,13 @@ export default function UsersManagementPage() {
         data={users || []}
         keyExtractor={(user) => user.id}
         isLoading={isLoading}
-        onAdd={() => console.log('Add new user')}
+        onAdd={() => router.push('/users-management/add')}
         addButtonText="Add User"
         emptyState={
           <div className="text-center">
             <p className="text-sm text-gray-500 dark:text-gray-400">No users found</p>
             <button
-              onClick={() => console.log('Add new user')}
+              onClick={() => router.push('/users-management/add')}
               className="mt-2 text-sm text-primary hover:text-primary-light"
             >
               Add your first user
