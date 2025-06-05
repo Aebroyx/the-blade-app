@@ -11,6 +11,7 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { useState } from 'react';
 import { ProfileModal } from './modals/ProfileModal';
+import toast from 'react-hot-toast';
 
 const userNavigation = [
   { name: 'Your profile', href: '#' },
@@ -48,6 +49,8 @@ export function TopNav({ onMenuClick }: TopNavProps) {
 
       // After cookies are cleared, update Redux state
       dispatch(logout());
+      // Toast success message
+      toast.success('Logged out successfully');
       
       // Redirect to login page
       router.push('/auth/login');

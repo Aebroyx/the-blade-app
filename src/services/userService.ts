@@ -1,4 +1,5 @@
 import { User } from '@/store/features/authSlice';
+import axiosInstance, { handleApiError } from '@/lib/axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
 
@@ -31,6 +32,14 @@ interface TokenResponse {
 
 interface LoginResponse {
   user: RegisterResponse;
+}
+
+interface GetUserResponse {
+  id: number;
+  username: string;
+  email: string;
+  name: string;
+  role: string;
 }
 
 class UserService {
@@ -95,6 +104,26 @@ class UserService {
       },
     });
   }
+
+  // Add new user management methods
+  async getAllUsers(): Promise<GetUserResponse[]> {
+    try {
+      const response = await axiosInstance.get<GetUserResponse[]>('/users');
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  }
+
+  async getUserById(id: string | number): Promise<GetUserResponse> {
+    try {
+      const response = await axiosInstance.get<GetUserResponse>(`/user/${id}`);
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  }
 }
 
-export const userService = new UserService(); 
+export const userService = new UserService();
+export type { GetUserResponse, RegisterRequest, RegisterResponse, LoginRequest, TokenResponse, LoginResponse };
