@@ -21,6 +21,9 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: 'BladeApp',
   description: 'A modern Next.js application',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
@@ -36,7 +39,12 @@ export default function RootLayout({
             {children}
             <ThemeToggle />
             <Toaster
-              position="top-right"
+              position="top-center"
+              containerStyle={{
+                top: 20,
+                left: 0,
+                right: 0,
+              }}
               toastOptions={{
                 // Default options for all toasts
                 duration: 3000,
@@ -44,6 +52,8 @@ export default function RootLayout({
                   background: 'var(--background)',
                   color: 'var(--foreground)',
                   border: '1px solid var(--border)',
+                  minWidth: '300px',
+                  textAlign: 'center',
                 },
                 success: {
                   iconTheme: {

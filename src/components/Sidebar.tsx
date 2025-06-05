@@ -1,6 +1,7 @@
 'use client';
 
 import { Fragment, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import {
   Dialog,
   DialogBackdrop,
@@ -21,8 +22,8 @@ import {
 import Image from 'next/image';
 
 const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Users Management', href: '#', icon: UsersIcon, current: false },
+  { name: 'Dashboard', href: '/', icon: HomeIcon },
+  { name: 'Users Management', href: '/users-management', icon: UsersIcon },
 //   { name: 'Projects', href: '#', icon: FolderIcon, current: false },
 //   { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
 //   { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
@@ -41,6 +42,12 @@ function classNames(...classes: string[]): string {
 
 export function Sidebar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
+
+  const navigationItems = navigation.map(item => ({
+    ...item,
+    current: pathname === item.href
+  }));
 
   return (
     <>
@@ -82,21 +89,21 @@ export function Sidebar() {
                 <ul role="list" className="flex flex-1 flex-col gap-y-7">
                   <li>
                     <ul role="list" className="-mx-2 space-y-1">
-                      {navigation.map((item) => (
+                      {navigationItems.map((item) => (
                         <li key={item.name}>
                           <a
                             href={item.href}
                             className={classNames(
                               item.current
-                                ? 'bg-gray-50 text-primary'
-                                : 'text-gray-700 hover:bg-gray-50 hover:text-primary',
+                                ? 'bg-gray-50 dark:bg-gray-800 text-primary'
+                                : 'text-foreground hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary',
                               'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                             )}
                           >
                             <item.icon
                               aria-hidden="true"
                               className={classNames(
-                                item.current ? 'text-primary' : 'text-gray-400 group-hover:text-primary',
+                                item.current ? 'text-primary' : 'text-foreground group-hover:text-primary',
                                 'size-6 shrink-0',
                               )}
                             />
@@ -174,14 +181,14 @@ export function Sidebar() {
             <ul role="list" className="flex flex-1 flex-col gap-y-7">
               <li>
                 <ul role="list" className="-mx-2 space-y-1">
-                  {navigation.map((item) => (
+                  {navigationItems.map((item) => (
                     <li key={item.name}>
                       <a
                         href={item.href}
                         className={classNames(
                           item.current
-                            ? 'bg-background text-primary'
-                            : 'text-foreground hover:bg-background hover:text-primary',
+                            ? 'bg-gray-50 dark:bg-gray-800 text-primary'
+                            : 'text-foreground hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary',
                           'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                         )}
                       >
