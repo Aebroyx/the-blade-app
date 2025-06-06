@@ -42,6 +42,12 @@ interface GetUserResponse {
   role: string;
 }
 
+interface CreateUserRequest {
+  name: string;
+  email: string;
+  role: string;
+}
+
 class UserService {
   private async fetchWithError(url: string, options: RequestInit = {}) {
     console.log('Making request to:', url, 'with options:', {
@@ -118,6 +124,15 @@ class UserService {
   async getUserById(id: string | number): Promise<GetUserResponse> {
     try {
       const response = await axiosInstance.get<GetUserResponse>(`/user/${id}`);
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  }
+
+  async createUser(data: CreateUserRequest): Promise<GetUserResponse> {
+    try {
+      const response = await axiosInstance.post<GetUserResponse>('/user', data);
       return response.data;
     } catch (error) {
       throw handleApiError(error);
