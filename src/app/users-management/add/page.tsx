@@ -3,9 +3,11 @@
 import { Navigation } from "@/components/Navigation";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { userService } from "@/services/userService";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { useCreateUser } from "@/hooks/useCreateUser";
+import toast from 'react-hot-toast';
 
 const roleOptions = [
   { value: 'user', label: 'User' },
@@ -15,6 +17,7 @@ const roleOptions = [
 
 export default function AddUserPage() {
   const router = useRouter();
+  const createUser = useCreateUser();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -22,37 +25,12 @@ export default function AddUserPage() {
     username: '',
     password: '',
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
     setFieldErrors({});
-
-    try {
-      await userService.createUser(formData);
-      router.push('/users-management');
-    } catch (err) {
-      if (err instanceof Error) {
-        try {
-          const errorData = JSON.parse(err.message);
-          if (typeof errorData === 'object' && errorData.errors) {
-            setFieldErrors(errorData.errors);
-            return;
-          }
-        } catch {
-          // If error message is not JSON, treat it as a general error
-        }
-        setError(err.message);
-      } else {
-        setError('Failed to create user');
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
+    await createUser.mutateAsync(formData);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,16 +63,21 @@ export default function AddUserPage() {
 
   return (
     <Navigation>
+      <div className="mb-6">
+        <button
+          type="button"
+          onClick={() => router.push('/users-management')}
+          className="inline-flex items-center gap-x-2 text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+        >
+          <ArrowLeftIcon className="h-5 w-5" aria-hidden="true" />
+          Back to Users List
+        </button>
+      </div>
+
       <form onSubmit={handleSubmit}>
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12">
-            <h1 className="text-base/7 font-semibold text-gray-900 dark:text-gray-100">Add User</h1>
-            
-            {error && (
-              <div className="mt-4 p-4 bg-red-50 text-red-700 rounded-md dark:bg-red-900/50 dark:text-red-200">
-                {error}
-              </div>
-            )}
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Add New User</h1>
 
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-4">
@@ -171,17 +154,17 @@ export default function AddUserPage() {
         <div className="mt-6 flex items-center justify-end gap-x-6">
           <button
             type="button"
-            onClick={() => router.back()}
-            className="text-sm/6 font-semibold text-gray-900 dark:text-gray-100"
+            onClick={() => router.push('/users-management')}
+            className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-100 dark:ring-gray-600 dark:hover:bg-gray-600"
           >
             Cancel
           </button>
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={createUser.isPending}
+            className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed dark:bg-primary dark:hover:bg-primary-light"
           >
-            {isSubmitting ? 'Creating...' : 'Create User'}
+            {createUser.isPending ? 'Creating...' : 'Create User'}
           </button>
         </div>
       </form>

@@ -48,6 +48,13 @@ interface CreateUserRequest {
   role: string;
 }
 
+interface ErrorResponse {
+  status: 'error';
+  message: string;
+  code?: string;
+  details?: any;
+}
+
 class UserService {
   private async fetchWithError(url: string, options: RequestInit = {}) {
     console.log('Making request to:', url, 'with options:', {
@@ -65,14 +72,14 @@ class UserService {
     const responseText = await response.text();
 
     if (!response.ok) {
-      let errorMessage = 'Something went wrong';
+      let errorResponse: ErrorResponse;
       try {
-        const error = JSON.parse(responseText);
-        errorMessage = error.error || errorMessage;
+        errorResponse = JSON.parse(responseText);
       } catch (e) {
         console.error('Error parsing error response:', e);
+        throw new Error('Something went wrong');
       }
-      throw new Error(errorMessage);
+      throw new Error(JSON.stringify(errorResponse));
     }
 
     try {
@@ -114,8 +121,8 @@ class UserService {
   // Add new user management methods
   async getAllUsers(): Promise<GetUserResponse[]> {
     try {
-      const response = await axiosInstance.get<GetUserResponse[]>('/users');
-      return response.data;
+      const response = await axiosInstance.get<{ data: GetUserResponse[] }>('/users');
+      return response.data.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -123,8 +130,8 @@ class UserService {
 
   async getUserById(id: string | number): Promise<GetUserResponse> {
     try {
-      const response = await axiosInstance.get<GetUserResponse>(`/user/${id}`);
-      return response.data;
+      const response = await axiosInstance.get<{ data: GetUserResponse }>(`/user/${id}`);
+      return response.data.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -132,7 +139,7 @@ class UserService {
 
   async createUser(data: CreateUserRequest): Promise<GetUserResponse> {
     try {
-      const response = await axiosInstance.post<GetUserResponse>('/user', data);
+      const response = await axiosInstance.post<GetUserResponse>('/user/create', data);
       return response.data;
     } catch (error) {
       throw handleApiError(error);
