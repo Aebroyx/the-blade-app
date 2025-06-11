@@ -210,7 +210,7 @@ export default function UserDetailsPage({ params }: { params: { id: string } }) 
                     <button
                     type="submit"
                     disabled={updateUser.isPending}
-                    className="inline-flex items-center gap-x-2 rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed dark:bg-primary dark:hover:bg-primary-light"
+                    className="inline-flex items-center gap-x-2 rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed dark:bg-primary dark:hover:bg-primary-dark"
                     >
                     {updateUser.isPending ? 'Saving...' : 'Save Changes'}
                     </button>

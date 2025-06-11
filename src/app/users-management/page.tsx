@@ -68,7 +68,7 @@ export default function UsersManagementPage() {
         <div className="flex justify-end gap-x-2">
           <button
             onClick={() => router.push(`/users-management/${user.id}`)}
-            className="text-primary hover:text-primary-light inline-flex items-center gap-x-1"
+            className="text-primary hover:text-primary-dark inline-flex items-center gap-x-1"
           >
             <EyeIcon className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -110,7 +110,7 @@ export default function UsersManagementPage() {
             <p className="text-sm text-gray-500 dark:text-gray-400">No users found</p>
             <button
               onClick={() => router.push('/users-management/add')}
-              className="mt-2 text-sm text-primary hover:text-primary-light"
+              className="mt-2 text-sm text-primary hover:text-primary-dark"
             >
               Add your first user
             </button>

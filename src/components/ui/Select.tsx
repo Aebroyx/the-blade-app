@@ -95,7 +95,7 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
                         {option.label}
                       </span>
                       {selected ? (
-                        <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-primary dark:text-primary-light">
+                        <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-primary dark:text-primary-dark">
                           <CheckIcon aria-hidden="true" className="h-5 w-5" />
                         </span>
                       ) : null}
