@@ -57,18 +57,12 @@ export default function RootLayout({
                     minWidth: '300px',
                     textAlign: 'center',
                   },
-                  success: {
-                    iconTheme: {
-                      primary: 'var(--primary)',
-                      secondary: 'var(--background)',
-                    },
-                  },
-                  error: {
-                    iconTheme: {
-                      primary: 'var(--destructive)',
-                      secondary: 'var(--background)',
-                    },
-                  },
+                  // success: {
+                  //   iconTheme: {
+                  //     primary: 'var(--primary)',
+                  //     secondary: 'var(--background)',
+                  //   },
+                  // },
                 }}
               />
             </ThemeProvider>
