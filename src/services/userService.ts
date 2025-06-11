@@ -55,6 +55,14 @@ interface ErrorResponse {
   details?: any;
 }
 
+interface UpdateUserRequest {
+  name: string;
+  email: string;
+  role: string;
+  username: string;
+  password: string;
+}
+
 class UserService {
   private async fetchWithError(url: string, options: RequestInit = {}) {
     console.log('Making request to:', url, 'with options:', {
@@ -145,7 +153,32 @@ class UserService {
       throw handleApiError(error);
     }
   }
+
+  async updateUser(id: string | number, data: UpdateUserRequest): Promise<GetUserResponse> {
+    try {
+      const response = await axiosInstance.put<GetUserResponse>(`/user/${id}`, data);
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  }
+
+  async deleteUser(id: string | number): Promise<void> {
+    try {
+      await axiosInstance.delete(`/user/${id}`);
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  }
+
+  async softDeleteUser(id: string | number): Promise<void> {
+    try {
+      await axiosInstance.put(`/user/${id}/soft-delete`);
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  }
+  
 }
 
-export const userService = new UserService();
-export type { GetUserResponse, RegisterRequest, RegisterResponse, LoginRequest, TokenResponse, LoginResponse };
+export const userService = new UserService();export type { GetUserResponse, RegisterRequest, RegisterResponse, LoginRequest, TokenResponse, LoginResponse };

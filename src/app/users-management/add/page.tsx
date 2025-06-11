@@ -6,12 +6,11 @@ import { useRouter } from "next/navigation";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { useCreateUser } from "@/hooks/useCreateUser";
+import { useCreateUser } from "@/hooks/useUser";
 import toast from 'react-hot-toast';
 
 const roleOptions = [
   { value: 'user', label: 'User' },
-  { value: 'root', label: 'Root' },
   { value: 'admin', label: 'Admin' },
 ];
 
@@ -151,7 +150,7 @@ export default function AddUserPage() {
           </div>
         </div>
 
-        <div className="mt-6 flex items-center justify-end gap-x-6">
+        <div className="mt-6 flex items-center justify-end gap-x-4">
           <button
             type="button"
             onClick={() => router.push('/users-management')}
@@ -164,7 +163,7 @@ export default function AddUserPage() {
             disabled={createUser.isPending}
             className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed dark:bg-primary dark:hover:bg-primary-light"
           >
-            {createUser.isPending ? 'Creating...' : 'Create User'}
+            {createUser.isPending ? 'Creating...' : 'Submit'}
           </button>
         </div>
       </form>

@@ -2,16 +2,43 @@
 
 import { Navigation } from "@/components/Navigation";
 import Table, { Column } from "@/components/ui/Table";
-import { userService, GetUserResponse } from "@/services/userService";
-import { useQuery } from "@tanstack/react-query";
+import { useDeleteUser, useGetAllUsers, useSoftDeleteUser } from "@/hooks/useUser";
+import { GetUserResponse } from "@/services/userService";
+import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import DeleteModal from '@/components/modals/DeleteModal';
 
 export default function UsersManagementPage() {
   const router = useRouter();
-  const { data: users, isLoading, error } = useQuery({
-    queryKey: ['users'],
-    queryFn: () => userService.getAllUsers(),
-  });
+  const { data: users, isLoading, error } = useGetAllUsers();
+  // delete user
+  const deleteUser = useDeleteUser();
+  const softDeleteUser = useSoftDeleteUser();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<number | null>(null);
+
+  const openDeleteModal = (id: number) => {
+    setUserToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      // await deleteUser.mutateAsync(id);
+      await softDeleteUser.mutateAsync(id);
+      setIsDeleteModalOpen(false);
+      setUserToDelete(null);
+    } catch (error) {
+      console.error('Delete failed:', error);
+    }
+  };
+
+  const handleConfirmDelete = () => {
+    if (!userToDelete) return;
+    handleDelete(userToDelete);
+  };
 
   // Define table columns
   const columns: Column<GetUserResponse>[] = [
@@ -38,12 +65,20 @@ export default function UsersManagementPage() {
       header: '',
       className: 'text-right',
       render: (user) => (
-        <button
-          onClick={() => console.log('Edit user:', user.id)}
-          className="text-primary hover:text-primary-light"
-        >
-          Edit<span className="sr-only">, {user.name}</span>
-        </button>
+        <div className="flex justify-end gap-x-2">
+          <button
+            onClick={() => router.push(`/users-management/${user.id}`)}
+            className="text-primary hover:text-primary-light inline-flex items-center gap-x-1"
+          >
+            <EyeIcon className="h-4 w-4" aria-hidden="true" />
+          </button>
+          <button
+            onClick={() => openDeleteModal(user.id)}
+            className="text-red-500 hover:text-red-700 inline-flex items-center gap-x-1"
+          >
+            <TrashIcon className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </div>
       ),
     },
   ];
@@ -81,6 +116,19 @@ export default function UsersManagementPage() {
             </button>
           </div>
         }
+      />
+      
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setUserToDelete(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete User"
+        description="Are you sure you want to delete this user? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
       />
     </Navigation>
   );
