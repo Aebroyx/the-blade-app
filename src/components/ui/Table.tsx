@@ -4,8 +4,8 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 // Define the base column type
 export type Column<T> = {
+  header: ReactNode;
   key: keyof T | string;
-  header: string;
   render?: (item: T) => ReactNode;
   className?: string;
 };

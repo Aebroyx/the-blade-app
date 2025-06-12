@@ -1,21 +1,42 @@
 'use client';
 
 import { Navigation } from "@/components/Navigation";
-import Table, { Column } from "@/components/ui/Table";
+import MasterTable from "@/components/ui/MasterTable";
 import { useDeleteUser, useGetAllUsers, useSoftDeleteUser } from "@/hooks/useUser";
 import { GetUserResponse } from "@/services/userService";
 import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DeleteModal from '@/components/modals/DeleteModal';
+import { format } from 'date-fns';
 
 export default function UsersManagementPage() {
   const router = useRouter();
-  const { data: users, isLoading, error } = useGetAllUsers();
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState('created_at');
+  const [sortDesc, setSortDesc] = useState(true);
+  const [filters, setFilters] = useState<Record<string, any>>({});
+
+  // Reset to first page when filters change
+  const handleFilterChange = (newFilters: Record<string, any>) => {
+    setFilters(newFilters);
+    setPage(1); // Reset to first page when filters change
+  };
+
+  const { data, isLoading, error } = useGetAllUsers({
+    page,
+    pageSize,
+    search,
+    sortBy,
+    sortDesc,
+    filters,
+  });
+
   // delete user
   const deleteUser = useDeleteUser();
   const softDeleteUser = useSoftDeleteUser();
-  const [isOpen, setIsOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<number | null>(null);
 
@@ -26,8 +47,8 @@ export default function UsersManagementPage() {
 
   const handleDelete = async (id: number) => {
     try {
-      // await deleteUser.mutateAsync(id);
-      await softDeleteUser.mutateAsync(id);
+      // await softDeleteUser.mutateAsync(id);
+      await deleteUser.mutateAsync(id);
       setIsDeleteModalOpen(false);
       setUserToDelete(null);
     } catch (error) {
@@ -41,7 +62,7 @@ export default function UsersManagementPage() {
   };
 
   // Define table columns
-  const columns: Column<GetUserResponse>[] = [
+  const columns = [
     {
       key: 'name',
       header: 'Name',
@@ -56,15 +77,33 @@ export default function UsersManagementPage() {
       key: 'role',
       header: 'Role',
       className: 'text-gray-500 dark:text-gray-400',
-      render: (user) => (
+      render: (user: GetUserResponse) => (
         <span className="capitalize">{user.role}</span>
       ),
+    },
+    {
+      key: 'created_at',
+      header: 'Created At', 
+      className: 'text-gray-500 dark:text-gray-400',
+      render: (user: GetUserResponse) =>
+        user.created_at
+          ? format(new Date(user.created_at), 'yyyy-MM-dd HH:mm')
+          : '-',
+    },
+    {
+      key: 'updated_at',
+      header: 'Updated At',
+      className: 'text-gray-500 dark:text-gray-400', 
+      render: (user: GetUserResponse) =>
+        user.updated_at
+          ? format(new Date(user.updated_at), 'yyyy-MM-dd HH:mm')
+          : '-',
     },
     {
       key: 'actions',
       header: '',
       className: 'text-right',
-      render: (user) => (
+      render: (user: GetUserResponse) => (
         <div className="flex justify-end gap-x-2">
           <button
             onClick={() => router.push(`/users-management/${user.id}`)}
@@ -83,6 +122,34 @@ export default function UsersManagementPage() {
     },
   ];
 
+  // Define filter fields
+  const filterFields = [
+    {
+      key: 'role',
+      label: 'Role',
+      type: 'select' as const,
+      options: [
+        { value: 'admin', label: 'Admin' },
+        { value: 'user', label: 'User' },
+      ],
+    },
+    {
+      key: 'name',
+      label: 'Name',
+      type: 'text' as const,
+    },
+    {
+      key: 'email',
+      label: 'Email',
+      type: 'text' as const,
+    },
+    {
+      key: 'username',
+      label: 'Username',
+      type: 'text' as const,
+    },
+  ];
+
   if (error) {
     return (
       <Navigation>
@@ -96,11 +163,11 @@ export default function UsersManagementPage() {
   return (
     <Navigation>
       <h1 className="text-2xl font-bold">Users Management</h1>
-      <Table<GetUserResponse>
+      <MasterTable<GetUserResponse>
         title="Users List"
         description="A list of all the users including their name, email and role."
         columns={columns}
-        data={users || []}
+        data={data?.data || []}
         keyExtractor={(user) => user.id}
         isLoading={isLoading}
         onAdd={() => router.push('/users-management/add')}
@@ -116,6 +183,25 @@ export default function UsersManagementPage() {
             </button>
           </div>
         }
+        // Pagination props
+        total={data?.total || 0}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+        // Search props
+        searchPlaceholder="Search users..."
+        onSearch={setSearch}
+        // Filter props
+        filterFields={filterFields}
+        onFilterChange={handleFilterChange}
+        // Sort props
+        sortBy={sortBy}
+        sortDesc={sortDesc}
+        onSortChange={(newSortBy, newSortDesc) => {
+          setSortBy(newSortBy);
+          setSortDesc(newSortDesc);
+        }}
       />
       
       <DeleteModal

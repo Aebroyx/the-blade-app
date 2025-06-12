@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { userService, GetUserResponse } from '@/services/userService';
+import { userService, GetUserResponse, GetAllUsersParams, PaginatedResponse } from '@/services/userService';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
@@ -44,10 +44,11 @@ export function useGetUserById(id: string) {
 }
 
 // Get All Users Query
-export function useGetAllUsers() {
-  return useQuery<GetUserResponse[], Error>({
-    queryKey: ['users'],
-    queryFn: () => userService.getAllUsers(),
+export function useGetAllUsers(params: GetAllUsersParams) {
+  return useQuery<PaginatedResponse<GetUserResponse>, Error>({
+    queryKey: ['users', params],
+    queryFn: () => userService.getAllUsers(params),
+    placeholderData: (previousData) => previousData, // Keep previous data while loading new data
   });
 }
 

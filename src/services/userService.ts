@@ -40,6 +40,8 @@ interface GetUserResponse {
   email: string;
   name: string;
   role: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface CreateUserRequest {
@@ -61,6 +63,31 @@ interface UpdateUserRequest {
   role: string;
   username: string;
   password: string;
+}
+
+// Response represents the standard API response structure
+interface ApiResponse<T> {
+  status: string;
+  message: string;
+  data: T;
+}
+
+// PaginatedResponse represents the pagination response structure
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+export interface GetAllUsersParams {
+  page: number;
+  pageSize: number;
+  search?: string;
+  sortBy?: string;
+  sortDesc?: boolean;
+  filters?: Record<string, any>;
 }
 
 class UserService {
@@ -127,9 +154,23 @@ class UserService {
   }
 
   // Add new user management methods
-  async getAllUsers(): Promise<GetUserResponse[]> {
+  async getAllUsers(params: GetAllUsersParams): Promise<PaginatedResponse<GetUserResponse>> {
     try {
-      const response = await axiosInstance.get<{ data: GetUserResponse[] }>('/users');
+      const queryParams = new URLSearchParams();
+      if (params.page) queryParams.append('page', params.page.toString());
+      if (params.pageSize) queryParams.append('pageSize', params.pageSize.toString());
+      if (params.search) queryParams.append('search', params.search);
+      if (params.sortBy) queryParams.append('sortBy', params.sortBy);
+      if (params.sortDesc !== undefined) queryParams.append('sortDesc', params.sortDesc.toString());
+      if (params.filters) {
+        Object.entries(params.filters).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== '') {
+            queryParams.append(`filters[${key}]`, value.toString());
+          }
+        });
+      }
+
+      const response = await axiosInstance.get<ApiResponse<PaginatedResponse<GetUserResponse>>>(`/users?${queryParams.toString()}`);
       return response.data.data;
     } catch (error) {
       throw handleApiError(error);
@@ -181,4 +222,5 @@ class UserService {
   
 }
 
-export const userService = new UserService();export type { GetUserResponse, RegisterRequest, RegisterResponse, LoginRequest, TokenResponse, LoginResponse };
+export const userService = new UserService();
+export type { GetUserResponse, RegisterRequest, RegisterResponse, LoginRequest, TokenResponse, LoginResponse };
