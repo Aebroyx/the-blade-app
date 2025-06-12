@@ -39,7 +39,7 @@ export default function RootLayout({
           <Providers>
             <ThemeProvider>
               {children}
-              <ThemeToggle />
+              {/* <ThemeToggle /> */}
               <Toaster
                 position="top-center"
                 containerStyle={{

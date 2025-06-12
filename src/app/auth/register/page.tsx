@@ -207,7 +207,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Creating account...' : 'Create Account'}
             </button>
@@ -216,7 +216,7 @@ export default function RegisterPage() {
 
         <p className="mt-10 text-center text-sm text-foreground">
           Already have an account?{' '}
-          <Link href="/auth/login" className="font-semibold text-primary hover:text-primary-light">
+          <Link href="/auth/login" className="font-semibold text-primary hover:text-primary-dark">
             Sign in
           </Link>
         </p>

@@ -7,6 +7,11 @@ import {
   DialogBackdrop,
   DialogPanel,
   TransitionChild,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
 } from '@headlessui/react';
 import {
   Bars3Icon,
@@ -18,8 +23,10 @@ import {
   HomeIcon,
   UsersIcon,
   XMarkIcon,
+  ChevronDownIcon,
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+import ThemeToggle from './ThemeToggle';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },
@@ -144,16 +151,41 @@ export function Sidebar() {
                     </ul>
                   </li> */}
                   <li className="mt-auto">
-                    <a
-                      href="#"
-                      className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-foreground hover:bg-background hover:text-primary"
-                    >
-                      <Cog6ToothIcon
-                        aria-hidden="true"
-                        className="size-6 shrink-0 text-foreground group-hover:text-primary"
-                      />
-                      Settings
-                    </a>
+                    <Menu as="div" className="relative">
+                      <MenuButton className="group -mx-2 flex w-full items-center justify-between rounded-md p-2 text-sm/6 font-semibold text-foreground hover:bg-background hover:text-primary">
+                        <div className="flex items-center gap-x-3">
+                          <Cog6ToothIcon
+                            aria-hidden="true"
+                            className="size-6 shrink-0 text-foreground group-hover:text-primary"
+                          />
+                          Settings
+                        </div>
+                        <ChevronDownIcon
+                          className="size-5 text-foreground group-hover:text-primary"
+                          aria-hidden="true"
+                        />
+                      </MenuButton>
+                      <Transition
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                      >
+                        <MenuItems className="absolute bottom-full left-0 z-10 mb-2 w-56 origin-bottom-left rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                          <div className="py-1">
+                            <MenuItem>
+                              {({ active }) => (
+                                <div className="px-4 py-2">
+                                  <ThemeToggle />
+                                </div>
+                              )}
+                            </MenuItem>
+                          </div>
+                        </MenuItems>
+                      </Transition>
+                    </Menu>
                   </li>
                 </ul>
               </nav>
@@ -236,16 +268,41 @@ export function Sidebar() {
                 </ul>
               </li> */}
               <li className="mt-auto">
-                <a
-                  href="#"
-                  className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-foreground hover:bg-background hover:text-primary"
-                >
-                  <Cog6ToothIcon
-                    aria-hidden="true"
-                    className="size-6 shrink-0 text-foreground group-hover:text-primary"
-                  />
-                  Settings
-                </a>
+                <Menu as="div" className="relative">
+                  <MenuButton className="group -mx-2 flex w-full items-center justify-between rounded-md p-2 text-sm/6 font-semibold text-foreground hover:bg-background hover:text-primary">
+                    <div className="flex items-center gap-x-3">
+                      <Cog6ToothIcon
+                        aria-hidden="true"
+                        className="size-6 shrink-0 text-foreground group-hover:text-primary"
+                      />
+                      Settings
+                    </div>
+                    <ChevronDownIcon
+                      className="size-5 text-foreground group-hover:text-primary"
+                      aria-hidden="true"
+                    />
+                  </MenuButton>
+                  <Transition
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                  >
+                    <MenuItems className="absolute bottom-full left-0 z-10 mb-2 w-56 origin-bottom-left rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <div className="py-1">
+                        <MenuItem>
+                          {({ active }) => (
+                            <div className="px-4 py-2">
+                              <ThemeToggle />
+                            </div>
+                          )}
+                        </MenuItem>
+                      </div>
+                    </MenuItems>
+                  </Transition>
+                </Menu>
               </li>
             </ul>
           </nav>
